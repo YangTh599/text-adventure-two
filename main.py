@@ -16,6 +16,7 @@ class Player():
         self.health = 50
         self.max_health = 50
         self.inventory = []
+        self.is_using = []
 
     def rename(self,name):
         self.name = name
@@ -24,10 +25,14 @@ class Player():
         print(f"""Name: {self.name}
 Health: {self.health}/{self.max_health}
 Inventory = {self.inventory}""")
+        
+    def inInventory(self,item):
+        if item in self.inventory:
+            return True
 
 # ----- FUNCTIONS -----
 
-def type_print(str, delay):
+def type_print(str, delay=.01):
     for char in str:
         slp(delay)
         sys.stdout.write(char)
@@ -35,11 +40,16 @@ def type_print(str, delay):
     sys.stdout.write("\n")
     sys.stdout.flush()
 
+def display_list(list,delay=0):
+    for index in range(len(list)):
+        print(f"{index+1}: {list[index]}")
+        slp(delay)
 # ----- Variables -----
 
 player = Player()
 score = 0
-backpack = []
+
+duck_quacks = 0 # Used to see how many times the rubberduck is quacked
 
 # ----- Name Input -----
 
@@ -60,12 +70,10 @@ while not name_decided:
 type_print(f"Hello Traveler {name}. Before you can embark your journey, you must select 3 items to begin.", .05)
 slp(.5)
 
-starting_items = ['hatchet', 'flint & steel', 'dagger', 'sandwich','tent','bandage']
+starting_items = ['hatchet', 'flint & steel', 'dagger', 'sandwich','tent','bandage','rubberduck']
 print("Choose 3 items: ")
 
-for i in range(len(starting_items)):
-    print(f"{i+1}: {starting_items[i]}")
-    slp(.75)
+display_list(starting_items,.25)
 print()
 
 while len(player.inventory) < 3:
@@ -89,8 +97,7 @@ while len(player.inventory) < 3:
         print()
 
     if len(player.inventory) < 3:
-        for i in range(len(starting_items)):
-                print(f"{i+1}: {starting_items[i]}")
+        display_list(starting_items)
 
 print(f"Lets see how you look so far!")
 slp(.5)
@@ -100,6 +107,40 @@ print()
 
 type_print("Now you are ready to face the challenges ahead.", .05)
 
+#-----ADVENTURE STARTS-----
+
+type_print("You're eyes suddenly close because the sudden lights are too bright for you to look at..",.01)
+slp(.2)
+type_print("You see now that you have somehow ended up on the floor in the forest.",.02)
+slp(2)
+print("What will you do?")
+
+scenario1 = True
+s1_choices = ["Look around"]
+
+
+while scenario1:
+
+    if player.inInventory('tent'):
+        s1_choices.append("Set up tent")
+    if player.inInventory('flint & steel'):
+        s1_choices.append("Attempt to start a fire")
+    if player.inInventory("rubberduck"):
+        s1_choices.append("Squeeze the rubberduck")
+
+    display_list(s1_choices)
+
+    try:
+        choice = int(input("What will you do?: "))
+
+        if (choice > 0 and choice <=len(s1_choices)):
+            if s1_choices[choice] == s1_choices[0]:
+                type_print("You see a village")
+    
+    except ValueError:
+        print("Please enter an integer")
+
+    
 
 
 
