@@ -5,6 +5,7 @@
 # ----- IMPORTED MODULES -----
 import time
 from time import sleep as slp
+from random import randint
 import sys
 
 # ----- CLASSES -----
@@ -78,6 +79,13 @@ def display_list(list,delay=0):
     for index in range(len(list)):
         print(f"{index+1}: {list[index]}")
         slp(delay)
+
+def rng(die=6,roll_needed=3):
+    roll = randint(1,die)
+    if roll >= roll_needed:
+        return True
+    else:
+        return False
 
 
 # ----- Variables -----
@@ -181,10 +189,13 @@ while scenario1:
             type_print("You see a village not too far..")
             slp(.2)
             type_print("You estimate a 10 minute walk to the village.")
-            slp(1)
+            slp(.2)
+            type_print("You also see that there are a bunch of sticks and leaves on the ground.")
+            slp(1.5)
 
             s1_choices.remove("Look around")
             s1_choices.insert(0,"Walk to the village")
+            s1_choices.insert(1,"Gather firewood")
 
         elif s1_choices[choice] == "Set up tent":
             type_print("You spent 5 minutes setting up the tent..")
@@ -196,7 +207,37 @@ while scenario1:
             type_print("You spend 4 minutes packing up the tent..")
             slp(.8)
             player.useItem('tent',True)
-            type_print("Your tent is now packed up")            
+            type_print("Your tent is now packed up")
+
+        elif s1_choices[choice] == "Gather firewood":
+            type_print("You look down at your feet.")
+            slp(.5)
+            if rng():
+                type_print("Some firewood seem to be magically placed between your legs..")
+                player.inventory.append("firewood")
+                slp(1)
+                print("You now got firewood!")
+
+                s1_choices.remove("Gather firewood")
+            else:
+                if "hatchet" in player.inventory:
+                    type_print("You remember you have a hatchet with you.")
+                    slp(.2)
+                    type_print("You spent 10 minutes gathering firewood")
+                    player.inventory.append("firewood")
+                    slp(1)
+                    print("You now got firewood!")
+                else:
+                    type_print("You try to look for good firewood")
+                    type_print("You see a lot of small sticks but nothing good..")
+
+
+        elif s1_choices[choice] == "Attempt to start a fire":
+            if "Lok arouond" in s1_choices:
+                type_print("You spark the ground...")
+                slp(1.2)
+                print("It did nothing")
+            else:    
 
 
 
