@@ -87,6 +87,12 @@ def rng(die=6,roll_needed=3):
     else:
         return False
 
+def list_check(list,element):
+    if element in list:
+        return True
+    else:
+        return False
+
 
 # ----- Variables -----
 
@@ -108,6 +114,7 @@ while not name_decided:
         if name == "":
             type_print("If you insist on that, you should just be called \"Alyx\"")
             player.rename("Alyx")
+            name_decided = True
         else:
             player.rename(name)
             print()
@@ -116,7 +123,7 @@ while not name_decided:
         print("Well,")
 
 # -----Starting Items-----
-type_print(f"Hello Traveler {name}. Before you can embark your journey, you must select 3 items to begin.")
+type_print(f"Hello Traveler {player.name}. Before you can embark your journey, you must select 3 items to begin.")
 slp(.5)
 
 starting_items = ['hatchet', 'flint & steel', 'dagger', 'sandwich','tent','bandage','rubberduck']
@@ -171,19 +178,18 @@ s1_choices = ["Look around"] #Look around at Index 0
 while scenario1:
 
     # --Additional Choices--
-    if player.inInventory('tent'):
+    if player.inInventory('tent') and not list_check(s1_choices,"Set up tent"):
         s1_choices.append("Set up tent") # Priority Index 1
-    elif player.isUsing('tent'):
-        s1_choices.append("Pack up tent")
-    if player.inInventory('flint & steel') or player.inInventory('firewood'):
+    if (player.inInventory('flint & steel') or player.inInventory('firewood')) and not list_check(s1_choices,"Attempt to start a fire"):
         s1_choices.append("Attempt to start a fire") # Priority Index 2
-    if player.inInventory("rubberduck"):
+    if player.inInventory("rubberduck") and not list_check(s1_choices,"Squeeze the rubberduck"):
         s1_choices.append("Squeeze the rubberduck") # Priority is Last Index
 
     display_list(s1_choices)
 
     try:
         choice = int(input("What will you do?: "))
+        choice -=1
 
         if s1_choices[choice] == "Look around":
 
@@ -203,6 +209,9 @@ while scenario1:
             slp(1)
             player.useItem('tent')
             type_print("Your tent is now set up")
+
+            index = s1_choices.index("Set up tent")
+            s1_choices.insert(index,"Pack up tent")
 
         elif s1_choices[choice] == "Pack up tent":
             type_print("You spend 4 minutes packing up the tent..")
@@ -236,7 +245,7 @@ while scenario1:
                     type_print("You will not be able to start a fire yet.")
                     slp(1)
             if not "Attempt to start a fire" in s1_choices:
-                s1_choices.add(len(s1_choices)-1,"Attempt to start a fire")
+                s1_choices.insert(len(s1_choices)-1,"Attempt to start a fire")
 
 
         elif s1_choices[choice] == "Attempt to start a fire":
@@ -262,6 +271,13 @@ while scenario1:
                 type_print("You spark the ground...")
                 slp(1.2)
                 print("It did nothing")
+
+        elif s1_choices[choice] == "Squeeze the rubberduck":
+            type_print("The duck quacked happily")
+            player.duck_quacks +=1
+
+        print()
+
     
     except IndexError:
         if len(s1_choices) ==1:
