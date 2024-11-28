@@ -175,7 +175,7 @@ while scenario1:
         s1_choices.append("Set up tent") # Priority Index 1
     elif player.isUsing('tent'):
         s1_choices.append("Pack up tent")
-    if player.inInventory('flint & steel'):
+    if player.inInventory('flint & steel') or player.inInventory('firewood'):
         s1_choices.append("Attempt to start a fire") # Priority Index 2
     if player.inInventory("rubberduck"):
         s1_choices.append("Squeeze the rubberduck") # Priority is Last Index
@@ -186,6 +186,7 @@ while scenario1:
         choice = int(input("What will you do?: "))
 
         if s1_choices[choice] == "Look around":
+
             type_print("You see a village not too far..")
             slp(.2)
             type_print("You estimate a 10 minute walk to the village.")
@@ -193,9 +194,9 @@ while scenario1:
             type_print("You also see that there are a bunch of sticks and leaves on the ground.")
             slp(1.5)
 
-            s1_choices.remove("Look around")
             s1_choices.insert(0,"Walk to the village")
             s1_choices.insert(1,"Gather firewood")
+            s1_choices.remove("Look around")
 
         elif s1_choices[choice] == "Set up tent":
             type_print("You spent 5 minutes setting up the tent..")
@@ -227,21 +228,41 @@ while scenario1:
                     player.inventory.append("firewood")
                     slp(1)
                     print("You now got firewood!")
+
+                    s1_choices.remove("Gather firewood")
                 else:
                     type_print("You try to look for good firewood")
                     type_print("You see a lot of small sticks but nothing good..")
+                    type_print("You will not be able to start a fire yet.")
+                    slp(1)
+            if not "Attempt to start a fire" in s1_choices:
+                s1_choices.add(len(s1_choices)-1,"Attempt to start a fire")
 
 
         elif s1_choices[choice] == "Attempt to start a fire":
-            if "Lok arouond" in s1_choices:
+
+            if player.inInventory("firewood"):
+                type_print("You set up the fire wood")
+                slp(1.2)
+
+                if player.inInventory("flint & steel"):
+                    type_print("You spark a fire onto the firewood.")
+                    slp(.5)
+                    print("You now have an ongoing fire.")
+
+                    player.useItem("firewood")
+                    s1_choices.remove("Attempt to start fire")
+                else:    
+                    type_print("You stare at the firewood..")
+                    slp(.5)
+                    print("Nothing happened to the firewood..")
+                    slp(.5)
+                    type_print("You picked the firewood back up")
+            else:
                 type_print("You spark the ground...")
                 slp(1.2)
                 print("It did nothing")
-            else:    
-
-
-
-
+    
     except IndexError:
         if len(s1_choices) ==1:
             type_print("...",1)
