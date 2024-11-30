@@ -48,7 +48,7 @@ Inventory = {self.inventory}""")
     def useItem(self,item, put_back=False):
         #Moves item from inventory to using
         if put_back:
-            if self.inUsing(item): #Checks if item is in inventory
+            if self.isUsing(item): #Checks if item is in inventory
                 index = self.is_using.index(item)
 
                 self.inventory.append(self.is_using[index])
@@ -165,11 +165,11 @@ type_print("Now you are ready to face the challenges ahead.")
 
 #-----ADVENTURE STARTS-----
 
-type_print("You're eyes suddenly close because the sudden lights are too bright for you to look at..")
-slp(.2)
-type_print("You see now that you have somehow ended up on the floor in the forest.")
-slp(2)
-print("What will you do?")
+# type_print("You're eyes suddenly close because the sudden lights are too bright for you to look at..")
+# slp(.2)
+# type_print("You see now that you have somehow ended up on the floor in the forest.")
+# slp(2)
+# print("What will you do?")
 
 scenario1 = True
 s1_choices = ["Look around"] #Look around at Index 0
@@ -212,12 +212,17 @@ while scenario1:
 
             index = s1_choices.index("Set up tent")
             s1_choices.insert(index,"Pack up tent")
+            s1_choices.remove("Set up tent")
 
         elif s1_choices[choice] == "Pack up tent":
             type_print("You spend 4 minutes packing up the tent..")
             slp(.8)
             player.useItem('tent',True)
             type_print("Your tent is now packed up")
+
+            index = s1_choices.index("Pack up tent")
+            s1_choices.insert(index,"Set up tent")
+            s1_choices.remove("Pack up tent")
 
         elif s1_choices[choice] == "Gather firewood":
             type_print("You look down at your feet.")
