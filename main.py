@@ -62,17 +62,29 @@ Inventory = {self.inventory}""")
                 self.inventory.remove(self.inventory[index])
             else:
                 print(f"You can't {item}")
+    
+    def checkQuacks(self):
+        if self.duck_quacks <=1:
+            print(f"You have squeezed the duck {self.duck_quacks} times")
+        else:
+            print(f"You have squeezed the duck {self.duck_quacks} times")
+
+# class Enemy():
+
+#     def __init__(self)
+
 
             
 
 # ----- FUNCTIONS -----
 
-def type_print(str, delay=.05):
+def type_print(str, delay=.05,next_line=True):
     for char in str:
         slp(delay)
         sys.stdout.write(char)
         sys.stdout.flush()
-    sys.stdout.write("\n")
+    if next_line:
+        sys.stdout.write("\n")
     sys.stdout.flush()
 
 def display_list(list,delay=0):
@@ -80,12 +92,18 @@ def display_list(list,delay=0):
         print(f"{index+1}: {list[index]}")
         slp(delay)
 
-def rng(die=6,roll_needed=3):
-    roll = randint(1,die)
-    if roll >= roll_needed:
-        return True
+def rng(die=6,roll_needed=3,num_specific=False):
+    roll = randint(1,die+1)
+    if not num_specific:
+        if roll >= roll_needed:
+            return True
+        else:
+            return False
     else:
-        return False
+        if roll == roll_needed:
+            return True
+        else:
+            return False
 
 def list_check(list,element):
     if element in list:
@@ -165,11 +183,11 @@ type_print("Now you are ready to face the challenges ahead.")
 
 #-----ADVENTURE STARTS-----
 
-# type_print("You're eyes suddenly close because the sudden lights are too bright for you to look at..")
-# slp(.2)
-# type_print("You see now that you have somehow ended up on the floor in the forest.")
-# slp(2)
-# print("What will you do?")
+type_print("You're eyes suddenly close because the sudden lights are too bright for you to look at..")
+slp(.2)
+type_print("You see now that you have somehow ended up on the floor in the forest.")
+slp(2)
+print("What will you do?")
 
 scenario1 = True
 s1_choices = ["Look around"] #Look around at Index 0
@@ -204,6 +222,28 @@ while scenario1:
             s1_choices.insert(1,"Gather firewood")
             s1_choices.remove("Look around")
 
+        elif s1_choices[choice] == "Walk to the village":
+            type_print("You walk to the village.")
+            slp(.5)
+            type_print("It take you 10 minutes..")
+            slp(.5)
+            type_print("You get to a bridge before the village entrance..")
+            slp(.5)
+            type_print("You cross the bridge and then, ", next_line=False)
+            slp(.75)
+            type_print("the bridge collapses behind you..")
+            slp(1)
+
+            if player.isUsing("tent"):
+                type_print("You realized you've forgotten your tent!")
+                type_print("You no longer have a tent")
+                player.is_using.remove("tent")
+                slp(1)
+            
+            slp(1)
+            scenario1 = False
+            
+        
         elif s1_choices[choice] == "Set up tent":
             type_print("You spent 5 minutes setting up the tent..")
             slp(1)
@@ -278,8 +318,27 @@ while scenario1:
                 print("It did nothing")
 
         elif s1_choices[choice] == "Squeeze the rubberduck":
-            type_print("The duck quacked happily")
-            player.duck_quacks +=1
+            if player.inInventory("rubberduck"):
+                if rng(100,92,True):
+                    type_print("THE DUCK EXPLODED",.02)
+                    slp(2)
+
+                    dmg = randint(45,50)
+                    type_print(f"You took {dmg} damage. ",next_line=False)
+                    player.health -= dmg
+                    type_print(f"You now have {player.health}/{player.max_health} health.")
+
+                    player.inventory.append("broken rubberduck")
+                    player.inventory.remove("rubberduck")
+                else:
+                    type_print("The duck quacked happily")
+                    player.duck_quacks +=1
+                    player.checkQuacks()
+            elif player.inInventory("broken rubberduck"):
+                type_print("You tried to squeeze the rubberduck..")
+                slp(1)
+                type_print("Nothing came out..")
+                slp(1)
 
         print()
 
@@ -293,7 +352,14 @@ while scenario1:
     except ValueError:
         print("Please enter an integer")
 
-    
+
+print()
+slp(1)
+print("You made it to the village!")
+type_print("Let's see how you're doing.")
+slp(1)
+player.showInfo()
+
 
 
 
